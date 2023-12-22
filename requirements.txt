@@ -1,0 +1,7 @@
+fastapi
+gunicorn
+uvicorn
+pydantic
+transformers
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==2.1.0+cpu
