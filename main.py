@@ -4,7 +4,7 @@ torch.set_grad_enabled(False)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator, model_validator
 from transformers import AutoTokenizer, AutoModel
 from typing import List, Tuple
 
@@ -26,6 +26,18 @@ app.add_middleware(
 class ReqIn(BaseModel):
   text: str
   query_entities_span: List[Tuple[int, int]]
+
+  @field_validator('*')
+  @classmethod
+  def check_text(cls, v, info):
+    if len(v) < 1: raise ValueError(f'{info.field_name} must be at least 1 character')
+    return v
+
+  @model_validator(mode='after')
+  def validate_query_entities_span(self):
+    for start, end in self.query_entities_span:
+      if start < 0 or end > len(self.text): raise ValueError(f'Invalid query_entities_span: {start}, {end}. Text length: {len(self.text)}')
+    return self
 
 class ResOut(BaseModel):
   entity_embeddings: List[List[float]]
