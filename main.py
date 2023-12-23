@@ -32,7 +32,10 @@ class ResOut(BaseModel):
 
 
 def get_indices_within_offset(offset_mapping, start_offset, end_offset):
-  return [i for i, (start, end) in enumerate(offset_mapping) if not (end < start_offset or start > end_offset)]
+  return [
+    i+1 for i, (start, end) in enumerate(offset_mapping[1:-1])
+    if not (end < start_offset or start > end_offset)
+  ]  # 1:-1 because of [CLS] token & [SEP] token
 
 @app.post('/embed_entity')
 async def embed_entity(req: ReqIn):
