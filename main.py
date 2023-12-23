@@ -30,7 +30,7 @@ class ReqIn(BaseModel):
   @field_validator('*')
   @classmethod
   def check_text(cls, v, info):
-    if len(v) < 1: raise ValueError(f'{info.field_name} must be at least 1 character')
+    if len(v) < 1: raise ValueError(f'{info.field_name} must be at least 1 element long')
     return v
 
   @model_validator(mode='after')
